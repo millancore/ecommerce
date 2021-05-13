@@ -1,0 +1,9 @@
+{
+  "name": "fec/ecommerce",
+  "description": "Ecommerce",
+  "autoload": {
+    "psr-4": {
+        "Eco\\": "src"
+    }
+  }
+}
