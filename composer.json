@@ -3,7 +3,12 @@
   "description": "Ecommerce",
   "autoload": {
     "psr-4": {
-        "Eco\\": "src"
+         "Eco\\": "src",
+         "Core\\": "src"
     }
+  },
+  "require": {
+    "symfony/http-foundation": "^5.2",
+    "nikic/fast-route": "^1.3"
   }
 }
