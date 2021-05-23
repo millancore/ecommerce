@@ -2,12 +2,12 @@
 
 include_once __DIR__. '/../bootstrap.php';
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 # Services Container
 
-$request = Request::createFromGlobals();
+//$request = Request::createFromGlobals();
 
 // Router
   # -> Router Collection
@@ -16,14 +16,30 @@ $request = Request::createFromGlobals();
 
 // map a route
 
+class Request extends SymfonyRequest
+{
+    public function all(): array
+    {
+      return $this->request->all();
+    }
+}
+
+$request = Request::createFromGlobals();
+
 class HomeController {
     public function index() {
         echo 'Hello!';
     }
 }
 
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($request) {
     $r->addRoute('GET', '/', [HomeController::class, 'index']);
+    $r->addRoute('POST', '/api/cart/{id:\d+}', function ()  use ($request){
+        //var_dump($request->request->get('product'));
+        //$_POST = json_decode(file_get_contents('php://input'), true);
+        var_dump($request->all());
+        echo 'Product added!';
+    });
 });
 
 $httpMethod = $request->getMethod();
@@ -36,6 +52,8 @@ if (false !== $pos = strpos($uri, '?')) {
 $uri = rawurldecode($uri);
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+
+[$method, $handler, $args] = $routeInfo;
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
@@ -52,8 +70,10 @@ switch ($routeInfo[0]) {
         break;
 }
 
-$controller = new $handler[0];
-$controller->{$handler[1]}();
+$handler();
+
+//$controller = new $handler[0];
+//$controller->{$handler[1]}();
 
 # Controllers
 

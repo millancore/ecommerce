@@ -1,0 +1,14 @@
+POST http://localhost:8000/api/cart/2
+Content-Type: application/x-www-form-urlencoded
+
+product=12&quantity=2
+###
+
+POST http://localhost:8000/api/cart/2
+Content-Type: multipart/form-data
+
+{
+  "product": "3123",
+  "quantity": 2
+}
+###
